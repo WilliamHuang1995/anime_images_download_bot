@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/WilliamHuang1995/anime_images_download_bot#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "snoowrap": "^1.15.2"
   }
 }
