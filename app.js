@@ -10,10 +10,10 @@ const axios = require('axios');
 const config = require('./config.json')
 
 //regex
-const regex_full = /\[[.,"!\w\d\s-]+\]\(https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)\)/g
-const regex_comment = /[.,"!\w\d\s-]+/g
-const regex_link = /https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)/g
-const regex_file_name = /[\w]+(.png|.jpg|.gifv)/g
+const regex_full = /\[[.,"'*!\w\d\u0080-\uFFFF\s-]+\]\(https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)\)/gu
+const regex_comment = /[.,"'*!\w\d\u0080-\uFFFF\s-]+/gu
+const regex_link = /https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)/gu
+const regex_file_name = /[\w]+(.png|.jpg|.gifv)/gu
 
 //arrays
 let link_comments = []
@@ -27,7 +27,7 @@ const r = new snoowrap({
     username: config.username,
     password: config.password
 });
-let thread = '922bv4'
+let thread = '9l8rqr'
 //run function every day
 async function main() {
     //fetch user autolovepon
