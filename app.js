@@ -62,7 +62,11 @@ function split(){
         if(!link.includes('/a/')){
             let filename = link.match(regex_file_name)[0]
             //handle gifv cases
-            filename = filename.replace('.gifv','.mp4')
+            if(link.includes('.gifv')){
+                filename = filename.replace('.gifv','.gif')
+                link = `http://imgur.com/download/`+filename.replace('.gif','')
+            }
+
             
             download(link,filename)
         }

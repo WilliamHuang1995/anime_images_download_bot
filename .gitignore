@@ -5,4 +5,5 @@ config.json
 *.jpg
 *.png
 *.gifv
+*.gif
 *.mp4
