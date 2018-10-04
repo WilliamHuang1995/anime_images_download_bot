@@ -19,3 +19,10 @@ create database
 grab post from autolovepon instead  
 dockerize database (maybe)  
 make a front end for users who don't know how to program
+
+### To Fix
+fix links for https://imgur.com/link (figure out regex)  
+download albums  
+https://imgur.com/Iq3rilC  
+links where they use url as the link 
+

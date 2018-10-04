@@ -10,8 +10,8 @@ const axios = require('axios');
 const config = require('./config.json')
 
 //regex
-const regex_full = /\[[.,"'*!\w\d\u0080-\uFFFF\s-]+\]\(https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)\)/gu
-const regex_comment = /[.,"'*!\w\d\u0080-\uFFFF\s-]+/gu
+const regex_full = /\[[.,"'*!:?\w\d\u0080-\uFFFF\s-]+\]\s*\(https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)\)/gu
+const regex_comment = /[.,"'*!:?\w\d\u0080-\uFFFF\s-]+/gu
 const regex_link = /https:\/\/(i.imgur|imgur).com\/[\w]+(\/[\w]+|.png|.jpg|.gifv)/gu
 const regex_file_name = /[\w]+(.png|.jpg|.gifv)/gu
 
@@ -27,7 +27,7 @@ const r = new snoowrap({
     username: config.username,
     password: config.password
 });
-let thread = '9l8rqr'
+let thread = '9hfciu'
 //run function every day
 async function main() {
     //fetch user autolovepon
@@ -46,54 +46,62 @@ async function main() {
         //only care about comments with imgur links
         if (comment.body.includes('imgur.com')) {
             let result = comment.body.match(regex_full)
-            //store results into array
-            if(Array.isArray(result)) link_comments = link_comments.concat(result)
-            else link_comments.push(result)
+            if (result == null) {
+                console.log(comment.body)
+
+            } else {
+                //store results into array
+                if (Array.isArray(result)) link_comments = link_comments.concat(result)
+                else link_comments.push(result)
+            }
         }
     })
     split()
 }
 
-function split(){
-    link_comments.forEach((ref)=>{
+function split() {
+    link_comments.forEach((ref) => {
         let comment = ref.match(regex_comment)[0]
         let link = ref.match(regex_link)[0]
         //can't be bothered to deal with albums just yet
-        if(!link.includes('/a/')){
+        if (!link.includes('/a/')) {
             let filename = link.match(regex_file_name)[0]
             //handle gifv cases
-            if(link.includes('.gifv')){
-                filename = filename.replace('.gifv','.gif')
-                link = `http://imgur.com/download/`+filename.replace('.gif','')
+            if (link.includes('.gifv')) {
+                filename = filename.replace('.gifv', '.gif')
+                link = `http://imgur.com/download/` + filename.replace('.gif', '')
             }
 
-            
-            download(link,filename)
+
+            download(link, filename)
         }
         //maybe add to database in the future
-        mapping.push({link:link,comment:comment})
+        mapping.push({
+            link: link,
+            comment: comment
+        })
     })
     // console.log(mapping)
 }
 
 //download
-async function download(link,filename){
-    const path = Path.resolve(__dirname,'./image',filename)
+async function download(link, filename) {
+    const path = Path.resolve(__dirname, './image', filename)
     const response = await axios({
         method: 'GET',
         url: link,
         responseType: 'stream'
     })
     response.data.pipe(fs.createWriteStream(path))
-    return new Promise((resolve,reject)=>{
-        response.data.on('end',()=>{
+    return new Promise((resolve, reject) => {
+        response.data.on('end', () => {
             resolve()
         })
-        response.data.on('error',err=>{
+        response.data.on('error', err => {
             reject(err)
         })
     })
-       
+
 }
 
 main()
