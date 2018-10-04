@@ -13,3 +13,9 @@ install dependencies
 `npm install`  
 start the program  
 `npn start`
+
+### Back Log
+create database  
+grab post from autolovepon instead  
+dockerize database (maybe)  
+make a front end for users who don't know how to program
