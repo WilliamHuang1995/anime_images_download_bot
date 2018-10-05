@@ -27,9 +27,19 @@ const r = new snoowrap({
     username: config.username,
     password: config.password
 });
-let thread = '9hfciu'
 //run function every day
-async function main() {
+
+async function main(){
+    const botSubmissions = await r.getUser('autolovepon').getSubmissions()
+    botSubmissions.forEach(function(submission){
+        parseThread(submission)
+
+        //if pass certain comment threshold then pass to download function
+        //or compare with a list of anime you follow
+    })
+}
+
+async function parseThread(submission) {
     //fetch user autolovepon
     //filter post by keyword provided by config
     //check if post already visited before by 
@@ -37,7 +47,8 @@ async function main() {
     //  comparing with database?
     //parse through comments
     //download links using  cheerio parsing
-    const response = await r.getSubmission(thread).expandReplies({
+    let dir = submission.title.replace(/[\\\/\:\*\?\"\>\<\|\s]+/g,'')
+    const response = await submission.expandReplies({
         limit: Infinity,
         depth: 1
     })
@@ -56,10 +67,10 @@ async function main() {
             }
         }
     })
-    split()
+    split(dir)
 }
 
-function split() {
+function split(dir) {
     link_comments.forEach((ref) => {
         let comment = ref.match(regex_comment)[0]
         let link = ref.match(regex_link)[0]
@@ -73,7 +84,7 @@ function split() {
             }
 
 
-            download(link, filename)
+            download(link, filename,dir)
         }
         //maybe add to database in the future
         mapping.push({
@@ -85,13 +96,18 @@ function split() {
 }
 
 //download
-async function download(link, filename) {
-    const path = Path.resolve(__dirname, './image', filename)
+async function download(link, filename,folder) {
+    const dir = Path.resolve(__dirname, 'result/'+folder)
+    const path = Path.resolve(__dirname, 'result/'+folder, filename)
     const response = await axios({
         method: 'GET',
         url: link,
         responseType: 'stream'
     })
+    //TO FIX
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir)
+    }
     response.data.pipe(fs.createWriteStream(path))
     return new Promise((resolve, reject) => {
         response.data.on('end', () => {
